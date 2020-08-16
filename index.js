@@ -9,19 +9,31 @@ const connect = mongoose.connect(url);
 connect.then((db) => {
     console.log('COnnected Sucessfully to DB')
 
-    var newDish = dishes({
-        name : "Pizza Fries",
+    dishes.create({
+        name : "Pizza  bash",
         description: "Big Bash"
-    });
-
-    newDish.save()
-    .then((dish) => {
+    })
+    .then((dish) => {   
         console.log(dish);
 
-        return dishes.find({}).exec();
+        return dishes.findByIdAndUpdate(dish._id , {
+            $set:{description: 'updated Dish'}
+
+        },{
+            new:true
+        }).exec();
     })
-    .then((dishe) => {
-        console.log('found' , dishe)
+    .then((dish) => {
+        console.log('found' , dish)
+        dish.comments.push({
+            rating:5,
+            comment:'Hello I am Ahsan Its wonderful',
+            author: 'Ahsan Khan'
+        });
+        return dish.save();
+    })
+    .then((dish) => {
+        console.log('Deleteing here',dish)
         return dishes.deleteOne({});
     })
     .then(() =>{
